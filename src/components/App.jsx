@@ -52,7 +52,7 @@ const Phonebook = () => {
       localStorage.setItem('contacts', JSON.stringify(contacts))
     else setIsfirstRender(false)
   },
-    [contacts])
+    [contacts, isfirstRender])
 
   const handleChange = (event) => {
     const { value } = event.currentTarget;
