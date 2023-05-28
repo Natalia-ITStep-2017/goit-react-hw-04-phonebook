@@ -1,8 +1,18 @@
 import PropTypes from "prop-types";
 import css from './contact.module.css';
+import { useContext } from "react";
+import { Context } from "components/App";
 
-const ContactItem = ({ item, onDeleteContact }) => {
-  const { id, name, number } = item
+const ContactItem = ({ item }) => {
+
+  const { contacts, setContacts } = useContext(Context)
+  const { name, number } = item
+
+  const handleDeleteContact = () => {
+    setContacts(contacts.filter(({ id }) => id !== item.id)
+    )
+  }
+
   return (
     < li
       className={css.contact__item}
@@ -16,7 +26,7 @@ const ContactItem = ({ item, onDeleteContact }) => {
       <button
         type="button"
         className={css.contact__deleteBtn}
-        onClick={() => onDeleteContact(id)}>
+        onClick={handleDeleteContact}>
         Delete
       </button>
     </li >)
@@ -27,8 +37,7 @@ ContactItem.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     number: PropTypes.string.isRequired,
-  }).isRequired,
-  onDeleteContact: PropTypes.func.isRequired,
+  }).isRequired
 };
 
 export default ContactItem

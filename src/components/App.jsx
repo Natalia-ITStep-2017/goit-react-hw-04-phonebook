@@ -1,9 +1,11 @@
 import css from './app.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import { nanoid } from 'nanoid'
 import Form from './form/form';
 import Filter from './filter/filter';
 import ContactList from './contactList/contactList';
+
+export const Context = createContext()
 
 const Phonebook = () => {
 
@@ -15,7 +17,7 @@ const Phonebook = () => {
   ]);
   const [filter, setFilter] = useState('');
   const [isfirstRender, setIsfirstRender] = useState(true);
-
+  
   useEffect(() => {
       const localStorageContact = JSON.parse(localStorage.getItem('contacts'));
       if (localStorageContact) {
@@ -41,12 +43,6 @@ const Phonebook = () => {
     setContacts([...contacts, contact])
   }
 
-  const handleDeleteContact = (contactId) => {
-    setContacts((prev) =>
-      prev.filter(({ id }) => id !== contactId)
-    )
-  }
-
   useEffect(() => {
     if(!isfirstRender)
       localStorage.setItem('contacts', JSON.stringify(contacts))
@@ -63,6 +59,7 @@ const Phonebook = () => {
     name.toLowerCase().includes(filter.toLowerCase()));
 
   return (
+    <Context.Provider value={{contacts, setContacts}}>
     <div>
       <h1 className={css.title}> Phonebook </h1>
       <Form onSubmit={handleAddContact} />
@@ -72,12 +69,12 @@ const Phonebook = () => {
         onChange={handleChange} />
       {filterContacts().length !== 0 ? (
         <ContactList
-          contacts={filterContacts()}
-          onDeleteContact={handleDeleteContact} />
+          contacts={filterContacts()} />
       ) : (
         <p className={css.message}>No contacts</p>
       )}
-    </div>
+      </div>
+      </Context.Provider>
   )
 }
 
